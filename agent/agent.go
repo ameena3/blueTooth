@@ -12,7 +12,8 @@ import (
 
 type (
 	agent struct {
-		adapter *adapter.Adapter1
+		adapter         *adapter.Adapter1
+		agentRegistered bool
 	}
 
 	//Params are the parameters required for creating a new adapter
@@ -42,12 +43,15 @@ func (a *agent) Connect(deviceAddress string) (err error) {
 	if err != nil {
 		return err
 	}
-
-	ag := bagent.NewSimpleAgent()
-	err = bagent.ExposeAgent(conn, ag, bagent.CapKeyboardDisplay, true)
-	if err != nil {
-		return fmt.Errorf("SimpleAgent: %s", err)
+	if !a.agentRegistered {
+		ag := bagent.NewSimpleAgent()
+		err = bagent.ExposeAgent(conn, ag, bagent.CapKeyboardDisplay, true)
+		if err != nil {
+			return fmt.Errorf("SimpleAgent: %s", err)
+		}
+		a.agentRegistered = true 
 	}
+
 	devices, err := a.adapter.GetDevices()
 	if err != nil {
 		return fmt.Errorf("GetDevices: %s", err)
