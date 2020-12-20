@@ -61,7 +61,9 @@ out:
 			err = a.Connect(addressToConnect)
 			if err != nil {
 				log.Print(err.Error())
-				return
+				log.Println("Trying to connect after 10 seconds")
+			} else {
+				log.Println("Connection succeeded")
 			}
 		}
 	}
