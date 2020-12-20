@@ -24,7 +24,6 @@ func Run(adapterID, deviceName string) <-chan DiscoveredDeviceData {
 	go func() {
 		defer func() {
 			close(ddStream)
-			//api.Exit()
 			log.Println("Exiting out of discovery goroutine.")
 		}()
 		log.Println("Running goroutine for discovery of devices ...")

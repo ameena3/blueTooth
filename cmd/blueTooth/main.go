@@ -8,11 +8,12 @@ import (
 
 	"github.com/ameena3/blueTooth/agent"
 	"github.com/ameena3/blueTooth/discovery"
+	"github.com/muka/go-bluetooth/api"
 )
 
 func main() {
+	defer api.Exit()
 	log.Printf("Starting scanning for %s", os.Args[1])
-
 	ch := make(chan os.Signal)
 	signal.Notify(ch, os.Interrupt, os.Kill) // get notified of all OS signals
 
