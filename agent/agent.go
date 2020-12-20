@@ -17,7 +17,7 @@ type (
 
 	//Params are the parameters required for creating a new adapter
 	Params struct {
-		AdapterID string 
+		AdapterID string
 	}
 )
 

@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"time"
 
 	"github.com/ameena3/blueTooth/agent"
 	"github.com/ameena3/blueTooth/discovery"
@@ -18,6 +19,15 @@ func main() {
 	signal.Notify(ch, os.Interrupt, os.Kill) // get notified of all OS signals
 
 	dd := discovery.Run("hci0", os.Args[1])
+	a, err := agent.NewAdapter(&agent.Params{
+		AdapterID: "hci0",
+	})
+	if err != nil {
+		log.Print(err.Error())
+		return
+	}
+	var addressToConnect string
+out:
 	for {
 		select {
 		case sig := <-ch:
@@ -28,23 +38,32 @@ func main() {
 				log.Printf("The error is %s", d.Err.Error())
 			}
 			if !ok {
-				log.Println("The discovery stream is closed exiting.")
-				return
+				log.Println("The discovery stream is closed exiting discovery phase.")
+				break out
 			}
 			if strings.ToLower(d.Dd.Properties.Alias) == strings.ToLower(os.Args[1]) {
-				a, err := agent.NewAdapter(&agent.Params{
-					AdapterID: "hci0",
-				})
-				if err != nil {
-					log.Print(err.Error())
-					return
-				}
 				err = a.Connect(d.Dd.Properties.Address)
 				if err != nil {
 					log.Print(err.Error())
 					return
 				}
+				addressToConnect = d.Dd.Properties.Address
 			}
 		}
 	}
+
+	// Create a ticker that tries to connect every 10 second.
+	tick := time.NewTicker(time.Second * 10)
+	for {
+		select {
+		case <-tick.C:
+			log.Println("Trying to connect again")
+			err = a.Connect(addressToConnect)
+			if err != nil {
+				log.Print(err.Error())
+				return
+			}
+		}
+	}
+
 }
