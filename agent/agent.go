@@ -49,7 +49,7 @@ func (a *agent) Connect(deviceAddress string) (err error) {
 		if err != nil {
 			return fmt.Errorf("SimpleAgent: %s", err)
 		}
-		a.agentRegistered = true 
+		a.agentRegistered = true
 	}
 
 	devices, err := a.adapter.GetDevices()
