@@ -65,6 +65,7 @@ func (a *agent) Connect(deviceAddress string) (err error) {
 		}
 
 		if dev.Properties.Paired {
+			found = true
 			continue
 		}
 
