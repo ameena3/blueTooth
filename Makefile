@@ -1,4 +1,4 @@
-Docker-File :
+Docker-Artifacts :
 	@go get -u ./...
 	@go fmt ./...
-	@go build ./cmd/blueTooth/main.go
+	@docker run --rm -i -v $(PWD):/app -w /app golang go build -o main_linux /app/cmd/blueTooth/main.go
