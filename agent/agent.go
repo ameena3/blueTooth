@@ -66,6 +66,10 @@ func (a *agent) Connect(deviceAddress string) (err error) {
 
 		if dev.Properties.Paired {
 			found = true
+			err = dev.Connect()
+			if err != nil {
+				return fmt.Errorf("Connect failed: %s", err)
+			}
 			continue
 		}
 
